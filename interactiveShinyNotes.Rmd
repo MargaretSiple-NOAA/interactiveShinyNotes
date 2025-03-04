@@ -63,24 +63,34 @@ library(palmerpenguins)
 library(ggplot2)
 library(shiny)
 shinyApp(
-
   ui = fluidPage(
-    selectInput("species", "Species:",
-                choices = unique(penguins$species)),
+    checkboxGroupInput(
+      inputId = "species",
+      label = "Penguin species:",
+      c(
+        "Gentoo" = "Gentoo",
+        "Adelie" = "Adelie",
+        "Chinstrap" = "Chinstrap"
+      ),
+      selected = c("Gentoo", "Adelie")
+    ),
     plotOutput("penguinPlot")
   ),
-
   server = function(input, output) {
-    output$penguinPlot = renderPlot({
-      p1 <- ggplot(penguins, aes(x=bill_length_mm, y= bill_depth_mm, color = species)) +
-        geom_point() +
+    output$penguinPlot <- renderPlot({
+      penguins_plot <- subset(penguins, species == input$species)
+      p1 <- ggplot(
+        penguins_plot,
+        aes(x = bill_length_mm, y = bill_depth_mm, color = species)
+      ) +
+        geom_point(size = 4) +
         scale_color_brewer(palette = "Dark2") +
         ylab("Bill depth (mm)") +
-        xlab("Bill length (mm)")
+        xlab("Bill length (mm)") +
+        theme_light(base_size = 14)
       p1
     })
   },
-
   options = list(height = 500)
 )
 ```
@@ -91,24 +101,34 @@ library(palmerpenguins)
 library(ggplot2)
 library(shiny)
 shinyApp(
-
   ui = fluidPage(
-    selectInput("species", "Species:",
-                choices = unique(penguins$species)),
+    checkboxGroupInput(
+      inputId = "species",
+      label = "Penguin species:",
+      c(
+        "Gentoo" = "Gentoo",
+        "Adelie" = "Adelie",
+        "Chinstrap" = "Chinstrap"
+      ),
+      selected = c("Gentoo", "Adelie")
+    ),
     plotOutput("penguinPlot")
   ),
-
   server = function(input, output) {
-    output$penguinPlot = renderPlot({
-      p1 <- ggplot(penguins, aes(x=bill_length_mm, y= bill_depth_mm, color = species)) +
-        geom_point() +
+    output$penguinPlot <- renderPlot({
+      penguins_plot <- subset(penguins, species == input$species)
+      p1 <- ggplot(
+        penguins_plot,
+        aes(x = bill_length_mm, y = bill_depth_mm, color = species)
+      ) +
+        geom_point(size = 4) +
         scale_color_brewer(palette = "Dark2") +
         ylab("Bill depth (mm)") +
-        xlab("Bill length (mm)")
+        xlab("Bill length (mm)") +
+        theme_light(base_size = 14)
       p1
     })
   },
-
   options = list(height = 500)
 )
 ```
