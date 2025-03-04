@@ -1,5 +1,5 @@
 ---
-title: "Introduction interactive documents"
+title: "Introduction to interactive documents"
 date: "5 March 2025"
 output:
   html_document:
@@ -7,7 +7,8 @@ output:
     highlight: textmate
     css: ["lecture_inst.css", "fontawesome.css", "solid.css"]
     toc: true
-    toc_float: true
+    toc_float:
+      collapsed: false
     toc_depth: 3
 runtime: shiny
 ---
@@ -19,14 +20,24 @@ knitr::opts_chunk$set(echo = TRUE)
 <br>
 
 
+# Interactive documents
 
-## Embedding a Shiny app in a Markdown document
 
-You can embed a Shiny app in a Markdown / Quarto page. 
 
-A Markdown document with shiny widgets and outputs is called an "interactive document." It operates more like a Shiny app than your traditional static Markdown file:
+This is an interactive document showing how you can create interactive documents `r emoji::emoji("wink")`. The source code for this file is in [this GitHub repo](https://github.com/MargaretSiple-NOAA/interactiveShinyNotes).
+A
+Markdown document with shiny widgets and outputs is called an "interactive document." 
+
+You can embed a Shiny app in a Markdown / Quarto page. Think of a report where perhaps you want to share a lot of results, but allow the report's readers to examine different parts of the dataset, different relationships, etc.
+
+It operates more like a Shiny app than your traditional static Markdown file:
 
 - it is 'published' on a server (static HTMLs like your class notes won't work for embedding shiny widgets because it requires that reactive interface)
+- when you render the document, you are *deploying* the document (not knitting a static HTML file)
+
+# Embedding a Shiny app in a Markdown document
+
+## Doc setup
 
 To make a Markdown document interactive, you add the following to the yaml header:
 
@@ -37,8 +48,15 @@ output:html_document
 ---
 ```
 
+Once you do this, an icon will appear at the top that says "Run Document" instead of "Knit":
 
-You can do it with an inline definition, like this:
+![](www/run_document.PNG)
+
+## Code
+
+### Inline Shiny app
+
+You can embed your shiny app of choice with an inline chunk, like this:
 
 ```{r, eval=FALSE}
 library(palmerpenguins)
@@ -95,6 +113,8 @@ shinyApp(
 )
 ```
 
+### Shiny app in another directory 
+
 You can also call a Shiny app defined in another directory; it would look like this:
 
 ```{r eval=FALSE}
@@ -105,47 +125,23 @@ shinyAppDir(
 )
 ```
 
-Note that "showcase mode" (the shiny interface that shows both ui and code at the same time) won't work in Markdown docs.
 
-# Gallery of fun Shiny apps `r emoji::emoji("art")`
-
-Sam Czik's hiking/biking [Strava dashboard](https://samanthacsik.shinyapps.io/strava_dashboard/) (leaflet + flexdashboard)
-
-A cool example of how to use Shiny instead of a lengthy paper appendix to illustrate a point: [Beyond Temperature](https://heatherwelch.shinyapps.io/beyond_temperature/) from the paper *Projecting marine species range shifts from only temperature masks climate vulnerability* by Jennifer McHenry, Heather Welch, Sarah E. Lester, and Vincent Saba
-
-[tidytuesday.rocks](https://nsgrantham.shinyapps.io/tidytuesdayrocks/) by Neal Grantham aggregates #TidyTuesday entries from the internet (and it uses an API!) 
-
-[Sentify](https://rcharlie.shinyapps.io/sentify/) provides effective data viz on large datasets. By Charlie Thompson
-
-A whole gallery of great apps, complete with source code (and a great way to get recognized for your Shiny work!) All the submissions are [here](https://community.rstudio.com/c/shiny/shiny-contest/30) and the winners from the last contest (2021) are [here](https://posit.co/blog/winners-of-the-3rd-annual-shiny-contest/).
-
-## Apps I talked about during Mon/Wed lectures
-
-Novel-gazing, for analyzing your goodreads shelves as if they are ecological communities: https://msiple.shinyapps.io/NovelGazingApp/
-
-[Adopt Don't Shop](https://forum.posit.co/t/adopt-dont-shop-2020-shiny-contest-submission/59166) has sadly been deprecated because the shelter changed their website!
-
-# Resources
-
-- [shiny.posit.co](https://shiny.posit.co/) has great resources for building and deploying Shiny apps in both R and Python(!). 
-
-- Appsilon's virtual Shiny Conference is April 9-11 2025 ([free registration link](https://www.shinyconf.com/))
-
-- [Official Shiny cheatsheet](https://shiny.posit.co/r/articles/start/cheatsheet/)
-
-- [Mastering Shiny](https://mastering-shiny.org/) by Hadley Thee Wickham 
-
-- Colin Fay has several [talks](https://colinfay.me/talks-publications/) on Shiny app workflow and production
-
-## User experience (UX)
-
-Since you're at UW, you can take advantage of UW IT's *UX testing consultations*: [https://uxdesign.uw.edu/consultations.html](https://uxdesign.uw.edu/consultations.html)
+<div class="boxy boxy-orange boxy-lightbulb">
+**Note:** "showcase mode" (the shiny interface that shows both ui and code at the same time) won't work in Markdown docs.
+</div>
 
 
-## Pilot testing
+## Suggested workflow
 
-- if your institution doesn't have UX resources, design pilot testing so that you get helpful feedback on UX:
-  - [18F Methods](https://methods.18f.gov/validate/) and [Maze](https://maze.design/guides/usability-testing/questions/) have great lists of testing questions and methods
-  - 18F Methods also has an [example agreement](https://methods.18f.gov/participant-agreement/) for testers
-  - Depending on the final format, places like  [UsabilityHub](https://usabilityhub.com/) have interfaces that will provide data on clicks and scrolling behavior when testing is remote
-  - Check accessibility using the app's URL using the [Web Accessibility Evaluation (WAVE) Tool](https://wave.webaim.org/)
+If you are making a version-controlled interactive document, this is the workflow I suggest:
+
+1) Create a github repo
+2) Under the green "Code" button, copy the HTTPS text
+3) In RStudio, go to File --> New Project --> Version control and paste in that text (make sure you choose a directory that makes sense)
+4) In your new project, make sure you have a folder called "www" to contain your static images. 
+5) You can embed your app a few ways, so the scripts you have in the project directory will differ depending on what you want to do. But you need to at least have an Rmd with the `runtime: shiny` element in the yaml header.
+6) When you're ready to publish your document, you'll need to make sure you're logged into the account where you want to publish (for example, this file is published on the free shiny server, shinyapps.io). Publish it like you would a shiny app: run the doc, and click the "Publish" button in the top right of the window. 
+7) Changes you've made to the Rmd will not appear online until you "republish":
+
+![](www/republish.PNG)
+
