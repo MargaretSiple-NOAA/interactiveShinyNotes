@@ -1,0 +1,151 @@
+---
+title: "Introduction interactive documents"
+date: "5 March 2025"
+output:
+  html_document:
+    theme: spacelab
+    highlight: textmate
+    css: ["lecture_inst.css", "fontawesome.css", "solid.css"]
+    toc: true
+    toc_float: true
+    toc_depth: 3
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<br>
+
+
+
+## Embedding a Shiny app in a Markdown document
+
+You can embed a Shiny app in a Markdown / Quarto page. 
+
+A Markdown document with shiny widgets and outputs is called an "interactive document." It operates more like a Shiny app than your traditional static Markdown file:
+
+- it is 'published' on a server (static HTMLs like your class notes won't work for embedding shiny widgets because it requires that reactive interface)
+
+To make a Markdown document interactive, you add the following to the yaml header:
+
+```{r eval = FALSE}
+---
+runtime: shiny
+output:html_document
+---
+```
+
+
+You can do it with an inline definition, like this:
+
+```{r, eval=FALSE}
+library(palmerpenguins)
+library(ggplot2)
+library(shiny)
+shinyApp(
+
+  ui = fluidPage(
+    selectInput("species", "Species:",
+                choices = unique(penguins$species)),
+    plotOutput("penguinPlot")
+  ),
+
+  server = function(input, output) {
+    output$penguinPlot = renderPlot({
+      p1 <- ggplot(penguins, aes(x=bill_length_mm, y= bill_depth_mm, color = species)) +
+        geom_point() +
+        scale_color_brewer(palette = "Dark2") +
+        ylab("Bill depth (mm)") +
+        xlab("Bill length (mm)")
+      p1
+    })
+  },
+
+  options = list(height = 500)
+)
+```
+
+To get an embedded app that looks like this:
+```{r, echo=FALSE}
+library(palmerpenguins)
+library(ggplot2)
+library(shiny)
+shinyApp(
+
+  ui = fluidPage(
+    selectInput("species", "Species:",
+                choices = unique(penguins$species)),
+    plotOutput("penguinPlot")
+  ),
+
+  server = function(input, output) {
+    output$penguinPlot = renderPlot({
+      p1 <- ggplot(penguins, aes(x=bill_length_mm, y= bill_depth_mm, color = species)) +
+        geom_point() +
+        scale_color_brewer(palette = "Dark2") +
+        ylab("Bill depth (mm)") +
+        xlab("Bill length (mm)")
+      p1
+    })
+  },
+
+  options = list(height = 500)
+)
+```
+
+You can also call a Shiny app defined in another directory; it would look like this:
+
+```{r eval=FALSE}
+library(shiny)
+shinyAppDir(
+  system.file("examples/01_hello", package="shiny"),
+  options = list(width = "100%", height = 700)
+)
+```
+
+Note that "showcase mode" (the shiny interface that shows both ui and code at the same time) won't work in Markdown docs.
+
+# Gallery of fun Shiny apps `r emoji::emoji("art")`
+
+Sam Czik's hiking/biking [Strava dashboard](https://samanthacsik.shinyapps.io/strava_dashboard/) (leaflet + flexdashboard)
+
+A cool example of how to use Shiny instead of a lengthy paper appendix to illustrate a point: [Beyond Temperature](https://heatherwelch.shinyapps.io/beyond_temperature/) from the paper *Projecting marine species range shifts from only temperature masks climate vulnerability* by Jennifer McHenry, Heather Welch, Sarah E. Lester, and Vincent Saba
+
+[tidytuesday.rocks](https://nsgrantham.shinyapps.io/tidytuesdayrocks/) by Neal Grantham aggregates #TidyTuesday entries from the internet (and it uses an API!) 
+
+[Sentify](https://rcharlie.shinyapps.io/sentify/) provides effective data viz on large datasets. By Charlie Thompson
+
+A whole gallery of great apps, complete with source code (and a great way to get recognized for your Shiny work!) All the submissions are [here](https://community.rstudio.com/c/shiny/shiny-contest/30) and the winners from the last contest (2021) are [here](https://posit.co/blog/winners-of-the-3rd-annual-shiny-contest/).
+
+## Apps I talked about during Mon/Wed lectures
+
+Novel-gazing, for analyzing your goodreads shelves as if they are ecological communities: https://msiple.shinyapps.io/NovelGazingApp/
+
+[Adopt Don't Shop](https://forum.posit.co/t/adopt-dont-shop-2020-shiny-contest-submission/59166) has sadly been deprecated because the shelter changed their website!
+
+# Resources
+
+- [shiny.posit.co](https://shiny.posit.co/) has great resources for building and deploying Shiny apps in both R and Python(!). 
+
+- Appsilon's virtual Shiny Conference is April 9-11 2025 ([free registration link](https://www.shinyconf.com/))
+
+- [Official Shiny cheatsheet](https://shiny.posit.co/r/articles/start/cheatsheet/)
+
+- [Mastering Shiny](https://mastering-shiny.org/) by Hadley Thee Wickham 
+
+- Colin Fay has several [talks](https://colinfay.me/talks-publications/) on Shiny app workflow and production
+
+## User experience (UX)
+
+Since you're at UW, you can take advantage of UW IT's *UX testing consultations*: [https://uxdesign.uw.edu/consultations.html](https://uxdesign.uw.edu/consultations.html)
+
+
+## Pilot testing
+
+- if your institution doesn't have UX resources, design pilot testing so that you get helpful feedback on UX:
+  - [18F Methods](https://methods.18f.gov/validate/) and [Maze](https://maze.design/guides/usability-testing/questions/) have great lists of testing questions and methods
+  - 18F Methods also has an [example agreement](https://methods.18f.gov/participant-agreement/) for testers
+  - Depending on the final format, places like  [UsabilityHub](https://usabilityhub.com/) have interfaces that will provide data on clicks and scrolling behavior when testing is remote
+  - Check accessibility using the app's URL using the [Web Accessibility Evaluation (WAVE) Tool](https://wave.webaim.org/)
