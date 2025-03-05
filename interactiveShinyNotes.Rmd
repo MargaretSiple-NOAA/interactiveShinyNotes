@@ -5,12 +5,17 @@ output:
   html_document:
     theme: spacelab
     highlight: textmate
-    css: ["lecture_inst.css", "fontawesome.css", "solid.css"]
+    css:
+    - lecture_inst.css
+    - fontawesome.css
+    - solid.css
     toc: true
     toc_float:
       collapsed: false
     toc_depth: 3
 runtime: shiny
+resource_files:
+- www/run_document.PNG
 ---
 
 ```{r setup, include=FALSE}
